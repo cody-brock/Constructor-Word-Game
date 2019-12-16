@@ -3,16 +3,20 @@ const chalk = require("chalk");
 
 const inquirer = require("inquirer");
 
-const possibleWordsArr = ["baboon", "elephant", "skating"];
+const possibleWordsArr = ["baboon", "elephant", "skating", "baseball", "basketball", "crickets", "surprises", "hangman", "lollipop", "garden", "guerilla", "plant", "shovel", "redwood", "fencing", "sofa", "television", "orchid", "lava"];
 
+const randomNumberGenerator = function() {
+    return Math.floor(Math.random() * Math.floor(possibleWordsArr.length));
+}
 
 var gameLogic = function() {
     var possibleLettersHash = {a:true,b:true,c:true,d:true,e:true,f:true,g:true,h:true,i:true,j:true,k:true,l:true,m:true,n:true,o:true,p:true,q:true,r:true,s:true,t:true,u:true,v:true,w:true,x:true,y:true,z:true};
     var guessedLettersHash = {a:false,b:false,c:false,d:false,e:false,f:false,g:false,h:false,i:false,j:false,k:false,l:false,m:false,n:false,o:false,p:false,q:false,r:false,s:false,t:false,u:false,v:false,w:false,x:false,y:false,z:false};
     
     remainingGuesses = 7;
-    gameWord = new Word(possibleWordsArr[0]);
-    console.log(gameWord);
+    randomNumber = randomNumberGenerator()
+    gameWord = new Word(possibleWordsArr[randomNumber]);
+    // console.log(gameWord);
 
     const promptLoop = function() {
 
@@ -84,7 +88,6 @@ const replay = function() {
             }
         ]).then(answers => {
             if (answers.playAgain) {
-                console.log("HOORAY");
                 gameLogic();
             } else {
                 console.log("Thanks for playing!")
