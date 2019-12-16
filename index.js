@@ -13,7 +13,7 @@ var gameLogic = function() {
     gameWord = new Word(possibleWordsArr[0]);
     console.log(gameWord);
 
-    // const promptLoop = function() {
+    const promptLoop = function() {
 
         const inquirerLogic = inquirer
             .prompt([
@@ -23,45 +23,46 @@ var gameLogic = function() {
                     message: "Please choose a letter:",
                     validate: function validateUserGuess(userGuess) {
                         userGuess = userGuess.toLowerCase();
-                        
-                        if (possibleLettersHash[userGuess] && !guessedLettersHash[userGuess]) {
-                            gameWord.wordGuess(userGuess);
-                            console.log(gameWord.displayWordStatus());
-                            guessedLettersHash[userGuess] = true;
-
-                            
-                            console.log("\nCORRECT! Guess again\n");
-                            // promptLoop();
-
-                        } else if (possibleLettersHash[userGuess] && guessedLettersHash[userGuess]) {
-                            console.log("\nREPEATED GUESS - That letter has already been guessed.\n")
+                        if (!possibleLettersHash[userGuess]) {
+                            console.log("\nINVALID GUESS - guesses can only be a single letter A - Z.\n");
+                            return false;
                         } else {
-                            console.log("\nINVALID GUESS - guesses can only be a single letter A - Z.\n")
+                            return true;
                         }
                     }
                 }
 
 
             ]).then(answers => {
-                if (answers.confirm) {
-                    console.log("WOW!")
+
+                // gameWord.wordGuess(answers.userGuess);
+
+                if (guessedLettersHash[answers.userGuess]) {
+                    console.log("already guessed");
+                } else if (gameWord.wordGuess(answers.userGuess)) {
+                    console.log("Correct guess");
+                } else if (!gameWord.wordGuess(answers.userGuess)) {
+                    console.log("Incorrect guess");
                 }
+
+                console.log(gameWord.displayWordStatus());
+
+                let remainingLetters = true;
+                for (let i = 0; i < gameWord.wordArr.length; i++) {
+                    if (!gameWord.wordArr[i].guessed) {
+                        remainingLetters = false;
+                    }
+                }
+
+                if (remainingLetters) {
+                    console.log("WINNER!")
+                } else {
+                    promptLoop();
+                }
+            
             })
-    // }
-    // promptLoop();
+    }
+    promptLoop();
 }
 
 gameLogic();
-
-
-
-
-
-
-// newWord = new Word("maybea");
-
-// newWord.wordGuess("a");
-// newWord.wordGuess("m");
-
-// console.log(newWord.displayWordStatus());
-

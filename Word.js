@@ -20,14 +20,15 @@ Word.prototype.displayWordStatus = function() {
 }
 
 Word.prototype.wordGuess = function(char) {
-    
+    let success = false;
     for (let i = 0; i < this.wordArr.length; i++) {
 
         if (this.wordArr[i].guess(char)) {
-            this.wordArr.guessed = true;
+            this.wordArr[i].guessed = true;
+            success = true;
         }
-
     }
+    return success;
 }
 
 
