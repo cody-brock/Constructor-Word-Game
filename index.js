@@ -1,4 +1,5 @@
-const Word = require("./Word.js")
+const Word = require("./Word.js");
+const chalk = require("chalk");
 
 const inquirer = require("inquirer");
 
@@ -20,7 +21,7 @@ var gameLogic = function() {
                 {
                     type: 'input',
                     name: 'userGuess',
-                    message: "Please choose a letter:",
+                    message: "Guess a letter!",
                     validate: function validateUserGuess(userGuess) {
                         userGuess = userGuess.toLowerCase();
                         if (!possibleLettersHash[userGuess]) {
@@ -35,17 +36,24 @@ var gameLogic = function() {
 
             ]).then(answers => {
 
-                // gameWord.wordGuess(answers.userGuess);
+                gameWord.wordGuess(answers.userGuess);
 
                 if (guessedLettersHash[answers.userGuess]) {
-                    console.log("already guessed");
+                    console.log(chalk.red("\nALREADY GUESSED!!!\n"));
                 } else if (gameWord.wordGuess(answers.userGuess)) {
-                    console.log("Correct guess");
+                    console.log(chalk.green("\nCORRECT!!!\n"));
                 } else if (!gameWord.wordGuess(answers.userGuess)) {
-                    console.log("Incorrect guess");
+                    remainingGuesses--;
+                    console.log(chalk.red(`\nINCORRECT!!!\n\n`) + chalk.white(`${remainingGuesses} guesses remaining!!!\n`));
                 }
 
-                console.log(gameWord.displayWordStatus());
+                if (remainingGuesses <=0) {
+                    console.log(chalk.red.inverse("YOU LOSE!"))
+                    replay();
+                }
+
+                guessedLettersHash[answers.userGuess] = true;
+                console.log(gameWord.displayWordStatus() + "\n");
 
                 let remainingLetters = true;
                 for (let i = 0; i < gameWord.wordArr.length; i++) {
@@ -55,7 +63,8 @@ var gameLogic = function() {
                 }
 
                 if (remainingLetters) {
-                    console.log("WINNER!")
+                    console.log(chalk.green.inverse("WINNER!"))
+                    replay();
                 } else {
                     promptLoop();
                 }
@@ -63,6 +72,25 @@ var gameLogic = function() {
             })
     }
     promptLoop();
+}
+
+const replay = function() {
+    inquirer
+        .prompt([
+            {
+                type: 'confirm',
+                name: 'playAgain',
+                message: 'Would you like to play again?'
+            }
+        ]).then(answers => {
+            if (answers.playAgain) {
+                console.log("HOORAY");
+                gameLogic();
+            } else {
+                console.log("Thanks for playing!")
+                return;
+            }
+        })
 }
 
 gameLogic();

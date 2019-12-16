@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/cody-brock/Constructor-Word-Game#readme",
   "dependencies": {
+    "chalk": "^3.0.0",
     "inquirer": "^7.0.0"
   }
 }
